@@ -1,0 +1,134 @@
+timestamp: 2023-11-20T01:55:13.580884
+CREATE TABLE "auth_user"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "first_name" CHAR(128),
+    "last_name" CHAR(128),
+    "email" CHAR(512),
+    "password" CHAR(512),
+    "registration_key" CHAR(512),
+    "reset_password_key" CHAR(512),
+    "registration_id" CHAR(512)
+);
+success!
+timestamp: 2023-11-20T01:55:13.632388
+CREATE TABLE "auth_group"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "role" CHAR(512),
+    "description" TEXT
+);
+success!
+timestamp: 2023-11-20T01:55:13.696339
+CREATE TABLE "auth_membership"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "user_id" INTEGER REFERENCES "auth_user" ("id") ON DELETE CASCADE  ,
+    "group_id" INTEGER REFERENCES "auth_group" ("id") ON DELETE CASCADE  
+);
+success!
+timestamp: 2023-11-20T01:55:13.753345
+CREATE TABLE "auth_permission"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "group_id" INTEGER REFERENCES "auth_group" ("id") ON DELETE CASCADE  ,
+    "name" CHAR(512),
+    "table_name" CHAR(512),
+    "record_id" INTEGER
+);
+success!
+timestamp: 2023-11-20T01:55:13.806932
+CREATE TABLE "auth_event"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "time_stamp" TIMESTAMP,
+    "client_ip" CHAR(512),
+    "user_id" INTEGER REFERENCES "auth_user" ("id") ON DELETE CASCADE  ,
+    "origin" CHAR(512),
+    "description" TEXT
+);
+success!
+timestamp: 2023-11-20T01:55:13.857625
+CREATE TABLE "auth_cas"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "user_id" INTEGER REFERENCES "auth_user" ("id") ON DELETE CASCADE  ,
+    "created_on" TIMESTAMP,
+    "service" CHAR(512),
+    "ticket" CHAR(512),
+    "renew" CHAR(1)
+);
+success!
+timestamp: 2023-11-20T01:55:13.907183
+CREATE TABLE "empresa"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "nome" CHAR(512),
+    "ativo" CHAR(1),
+    "paginacao" INTEGER,
+    "observacao" TEXT,
+    "is_active" CHAR(1),
+    "created_on" TIMESTAMP,
+    "created_by" INTEGER REFERENCES "auth_user" ("id") ON DELETE CASCADE  ,
+    "modified_on" TIMESTAMP,
+    "modified_by" INTEGER REFERENCES "auth_user" ("id") ON DELETE CASCADE  
+);
+success!
+timestamp: 2023-11-20T01:55:13.954570
+CREATE TABLE "usuario_empresa"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "usuario" INTEGER REFERENCES "auth_user" ("id") ON DELETE CASCADE  ,
+    "empresa" INTEGER REFERENCES "empresa" ("id") ON DELETE CASCADE  ,
+    "tipo" CHAR(512),
+    "ativo" CHAR(1)
+);
+success!
+timestamp: 2023-11-20T01:55:13.999090
+CREATE TABLE "servico"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "empresa" INTEGER REFERENCES "empresa" ("id") ON DELETE CASCADE  ,
+    "nome" CHAR(512),
+    "descricao" CHAR(512),
+    "valor" DOUBLE NOT NULL DEFAULT 0.0,
+    "observacao" TEXT,
+    "ativo" CHAR(1),
+    "is_active" CHAR(1),
+    "created_on" TIMESTAMP,
+    "created_by" INTEGER REFERENCES "auth_user" ("id") ON DELETE CASCADE  ,
+    "modified_on" TIMESTAMP,
+    "modified_by" INTEGER REFERENCES "auth_user" ("id") ON DELETE CASCADE  
+);
+success!
+timestamp: 2023-11-20T01:55:14.062388
+CREATE TABLE "cliente"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "empresa" INTEGER REFERENCES "empresa" ("id") ON DELETE CASCADE  ,
+    "nome" CHAR(512),
+    "fone" CHAR(512),
+    "placa" CHAR(512),
+    "marca" CHAR(512),
+    "modelo" CHAR(512),
+    "observacao" TEXT,
+    "valor_total" DOUBLE NOT NULL DEFAULT 0.0,
+    "ativo" CHAR(1),
+    "is_active" CHAR(1),
+    "created_on" TIMESTAMP,
+    "created_by" INTEGER REFERENCES "auth_user" ("id") ON DELETE CASCADE  ,
+    "modified_on" TIMESTAMP,
+    "modified_by" INTEGER REFERENCES "auth_user" ("id") ON DELETE CASCADE  
+);
+success!
+timestamp: 2023-11-20T01:55:14.115072
+CREATE TABLE "registro_financeiro"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "empresa" INTEGER REFERENCES "empresa" ("id") ON DELETE CASCADE  ,
+    "servico" INTEGER REFERENCES "servico" ("id") ON DELETE CASCADE  ,
+    "cliente" INTEGER REFERENCES "cliente" ("id") ON DELETE CASCADE  ,
+    "tipo" CHAR(512),
+    "classificacao" CHAR(512),
+    "data_operacao" DATE,
+    "data_recebimento" DATE,
+    "descricao" CHAR(512) NOT NULL,
+    "valor_total" DOUBLE NOT NULL DEFAULT 0.0,
+    "liquidado" CHAR(1),
+    "excluido" CHAR(1),
+    "is_active" CHAR(1),
+    "created_on" TIMESTAMP,
+    "created_by" INTEGER REFERENCES "auth_user" ("id") ON DELETE CASCADE  ,
+    "modified_on" TIMESTAMP,
+    "modified_by" INTEGER REFERENCES "auth_user" ("id") ON DELETE CASCADE  
+);
+success!
